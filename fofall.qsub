@@ -1,0 +1,17 @@
+#PBS -l walltime=8:00:00
+#PBS -lnodes=1:ppn=32
+#PBS -m be
+#PBS -A bagl
+#   9am-6pm weekdays reserved for jobs < 30 minutes or < 5660 nodes
+#  Queues:  batch (default)
+#  Features:  "xe" (default), "xk", "x" (xe or xk non-specific)
+
+ulimit -c unlimited
+
+cd $PBS_O_WORKDIR
+export ATP_ENABLED=1
+
+# export MALLOC_CHECK_=2
+
+export OMP_NUM_THREADS=16
+python ./fofall.py >& DIAG.fofall
