@@ -1,11 +1,21 @@
 # ResolutionServer routine to find the formation epoch of all groups using a
 # series of snapshots from a cosmological simulation.
+# The definition of formation time is the time at which the most
+# massive progenitor of the cluster reaches a specified mass fraction
+# (specified by 'fracformed') of the cluster at the final time.
+#
+# The script depends on having a series of group catologues specified by
+# a "grp" tipsy array file.  The tipsy files are expected to have names
+# of the form 'simname'.stepnumber, and the grp files should have ".fof.grp"
+# appended to the snapshot name.
+#
+
 
 from math import *
 import os
 import glob
 import pickle
-simname = 'cube300'
+simname = 'cosmo600p.768'
 fracformed = .75 # if a group is at least this fraction of the final mass, it
                  # is considered formed
 formednow = []
@@ -49,7 +59,7 @@ grpformedreduce = """def localparticle(p):
 def timeform() :
     global formednow
     # get sorted array of outputs
-    snaps = glob.glob(simname + '.000???')
+    snaps = glob.glob(simname + '.??????')
     snaps.sort()
     snaplast = snaps[-1]
     # read in final output
