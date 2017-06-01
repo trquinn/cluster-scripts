@@ -3,7 +3,9 @@ import pylab
 import numpy
 import cPickle as pickle
 
-munit =  2.5370915e+19 # mass unit in solar masses
+# munit =  2.5370915e+19 # mass unit in solar masses
+# For h = .6777 and a 600 Mpc box
+munit =  2.7523584e+19 # mass unit in solar masses
 
 fmass = open('mass.pkl')
 mass = numpy.array(pickle.load(fmass))
