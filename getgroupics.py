@@ -2,9 +2,12 @@
 # This needs the grp file from the group finder at z = 0, and the IC file
 # from the volume run
 
-group = 19686 # the final gid of the group in question
-fileIC = 'runs22.bin'
-fileGRP = 'runs22.000500.fof.grp'
+# group = 19686 # the final gid of the group in question
+# fileIC = 'runs22.bin'
+# fileGRP = 'runs22.000500.fof.grp'
+group = 201824 # the final gid of the group in question
+fileIC = 'cosmo600.768.tbin'
+fileGRP = 'cosmo600p.768.000512.fof.grp'
 
 charm.loadSimulation(fileIC)
 
