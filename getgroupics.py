@@ -1,10 +1,14 @@
 # script to get the initial position and size of a group
+# This needs the grp file from the group finder at z = 0, and the IC file
+# from the volume run
 
 group = 19686 # the final gid of the group in question
+fileIC = 'runs22.bin'
+fileGRP = 'runs22.000500.fof.grp'
 
-charm.loadSimulation('runs22.bin')
+charm.loadSimulation(fileIC)
 
-charm.readTipsyArray('/unsafe-scratch/volatile/trq/cluster/runs22/runs22.000500.fof.grp', 'fgid')
+charm.readTipsyArray(fileGRP, 'fgid')
 
 print charm.createGroup_AttributeRange('cluster', 'All', 'fgid', group - .5, group + .5)
 
