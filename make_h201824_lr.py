@@ -57,7 +57,7 @@ def main():
     epsMpc = 0.00035155674140696647*48 # .351 kpc is romulus softening
     baseeps=epsMpc/pboxsize
     # make base particle grid
-    os.system('%s %d %g %g %g %g > %s.g1.bin' % (cpart, basegrid3, pmass, -pboxsize2, pboxsize2, baseeps, name))
+    # os.system('%s %d %g %g %g %g > %s.g1.bin' % (cpart, basegrid3, pmass, -pboxsize2, pboxsize2, baseeps, name))
     #
     # parameters for refinement
     # refine 4 times for this test run
@@ -73,22 +73,22 @@ def main():
     dr=basedr
     r_refine=r_refine/rfac
     print 'r_refine', r_refine
-    os.system('%s %g %g 2 %s.g2.bin < %s.g1.bin' % (refine, dr, r_refine, name, name))
+    # os.system('%s %g %g 2 %s.g2.bin < %s.g1.bin' % (refine, dr, r_refine, name, name))
 
     dr= dr*0.5
     r_refine=r_refine/rfac
     print 'r_refine', r_refine
-    os.system('%s %g %g 2 %s.g3.bin < %s.g2.bin' % (refine, dr, r_refine, name, name))
+    # os.system('%s %g %g 2 %s.g3.bin < %s.g2.bin' % (refine, dr, r_refine, name, name))
 
     r_refine=r_refine/rfac
     dr= dr*0.5
     print 'r_refine', r_refine
-    os.system('%s %g %g 2 %s.g4.bin < %s.g3.bin' % (refine, dr, r_refine, name, name))
+    # os.system('%s %g %g 2 %s.g4.bin < %s.g3.bin' % (refine, dr, r_refine, name, name))
 
     r_refine=r_refine/rfac
     dr= dr*0.5
     print 'r_refine', r_refine
-    os.system('%s %g %g 2 %s.g5.bin < %s.g4.bin' % (refine, dr, r_refine, name, name))
+    # os.system('%s %g %g 2 %s.g5.bin < %s.g4.bin' % (refine, dr, r_refine, name, name))
 
     # Folling is for high res.
     # r_refine=r_refine/rfac
@@ -104,37 +104,41 @@ def main():
         mysystem('fft <out2 > out3')
         kmax = nwaves_base*6.28*sqrt(3.0)/pboxsize
         mysystem('powk 1000 %g < %s.rfft > %s.pow' % (kmax, name, name))
-    mysystem('rhotophik < out3 > %s.phfft' % (name, ))
-    mysystem('gradrhok x < %s.phfft | invfftr > %s.fx' % (name, name))
-    mysystem('gradrhok y < %s.phfft | invfftr > %s.fy' % (name, name))
-    mysystem('gradrhok z < %s.phfft | invfftr > %s.fz' % (name, name))
+        mysystem('rhotophik < out3 > %s.phfft' % (name, ))
+        mysystem('gradrhok x < %s.phfft > gr_tmp.fft; invfftr < gr_tmp.fft > %s.fx' % (name, name))
+        mysystem('gradrhok y < %s.phfft > gr_tmp.fft; invfftr < gr_tmp.fft > %s.fy' % (name, name))
+        mysystem('gradrhok z < %s.phfft > gr_tmp.fft; invfftr < gr_tmp.fft > %s.fz' % (name, name))
 
     # make high res waves
     hrboxsize = 50.
     hrboxsize_hinv = hrboxsize*h
     nwaves_hr = 1536
+    # for low res only: "unpad" the fft to this number
+    nwaves_keep = 768
 
-    mysystem('echo %d %g 1.0 %g 1.0 0.0 -50 %g %g %g | kgen_mt > hr.fft0'
-                 % (nwaves_hr, hrboxsize_hinv, h, omega,  tilt, gamma))
-    mysystem('invfftr < hr.fft0 > hr.rg')
-    mysystem('fft < hr.rg > hr.rfft')
+    # mysystem('echo %d %g 1.0 %g 1.0 0.0 -50 %g %g %g | kgen_mt > hr.fft0'
+    #             % (nwaves_hr, hrboxsize_hinv, h, omega,  tilt, gamma))
+    # mysystem('export OMP_NUM_THREADS=4; invfftr < hr.fft0 > hr.rg')
+    # mysystem('fft < hr.rg > hr.rfft')
     kmax = nwaves_hr*6.28*sqrt(3.0)/hrboxsize
-    mysystem('powk 1000 %g < hr.rfft > hr.pow' % (kmax))
+    # mysystem('powk 1000 %g < hr.rfft > hr.pow' % (kmax))
     # zero out waves up to the Nyquist of the LR run
-    mysystem('speczero 0 %g < hr.rfft > hrz.fft'
-                 % ((hrboxsize_hinv/pboxsize_hinv)*nwaves_base/2))
-    mysystem('powk 1000 %g < hrz.fft > hrz.pow' % (kmax))
-    mysystem('rhotophik < hrz.fft > hr.phfft')
-    mysystem('gradrhok x < hr.phfft | invfftr > hr.fx')
-    mysystem('gradrhok y < hr.phfft | invfftr > hr.fy')
-    mysystem('gradrhok z < hr.phfft | invfftr > hr.fz')
+    # mysystem('speczero 0 %g < hr.rfft > hrz.fft'
+    #              % ((hrboxsize_hinv/pboxsize_hinv)*nwaves_base/2))
+    # mysystem('powk 1000 %g < hrz.fft > hrz.pow' % (kmax))
+    # mysystem('unpad %d < hrz.fft > hrz_lr.fft'
+    #              % (nwaves_keep,))
+    # mysystem('rhotophik < hrz_lr.fft > hr_lr.phfft')
+    # mysystem('gradrhok x < hr_lr.phfft | invfftr > hr_lr.fx')
+    # mysystem('gradrhok y < hr_lr.phfft | invfftr > hr_lr.fy')
+    # mysystem('gradrhok z < hr_lr.phfft | invfftr > hr_lr.fz')
 
     # Center of group (in real Mpc)
     mx = 83.203125
     my = 239.84375
     mz = 197.65625
 
-    mysystem('pmovefrgbg2t %s.g6.bin %s.fx %s.fy %s.fz hr.fx hr.fy hr.fz %g %g %g %g %g %g %g %g > %s.sbin'
+    mysystem('pmovefrgbg2t %s.g5.bin %s.fx %s.fy %s.fz hr_lr.fx hr_lr.fy hr_lr.fz %g %g %g %g %g %g %g %g > %s.sbin'
              % (name, name, name, name, zstart, bias, omega,
                 om_lambda, 0.0, mx, my, mz, name))
     # Unit conversion from Mpc, 10^15 M_sun, Gyr to natural units
