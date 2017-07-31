@@ -7,14 +7,19 @@ medmass = omega/(288*2**5)**3
 
 def findgal() :
     charm.createGroup_AttributeRange('highres', 'All', 'mass', -1, medmass*1.1)
-    cntPot = charm.findAttributeMin('highres', 'potential')
+    cntMass = charm.getCenterOfMass('highres')
+    # get 5 Mpc sphere around cntMass
+    charm.createGroupAttributeSphere('center', 'All', 'position', cntMass[0],
+                                     cntMass[1], cntMass[2], 5000./kpcunit)
+    cntPot = charm.findAttributeMin('center', 'potential')
     return cntPot
 
 def mtot(group) :
     dmass = charm.getAttributeSum(group, 'dark', 'mass')
-    gmass = charm.getAttributeSum(group, 'gas', 'mass')
-    smass = charm.getAttributeSum(group, 'star', 'mass')
-    return dmass + gmass + smass
+    return dmass
+#    gmass = charm.getAttributeSum(group, 'gas', 'mass')
+#    smass = charm.getAttributeSum(group, 'star', 'mass')
+#    return dmass + gmass + smass
 
 def density(group, r) :
     from math import pi
@@ -26,6 +31,9 @@ def getgaldensity(center, r) :
     charm.createGroupAttributeSphere('gal', 'All', 'position', center[0],
                                      center[1], center[2], r/kpcunit)
     return density('gal', r/kpcunit)
+
+def getmass(group):
+    return msolunit*charm.getAttributeSum(group, 'dark', 'mass')
 
 def writemark() :
     charm.writeGroupArray('gal', 'index', '/tmp/vir3.mark')
