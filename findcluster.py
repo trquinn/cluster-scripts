@@ -36,7 +36,12 @@ def getmass(group):
     return msolunit*charm.getAttributeSum(group, 'dark', 'mass')
 
 def writemark() :
-    charm.writeGroupArray('gal', 'index', '/tmp/vir3.mark')
+    charm.writeGroupArray('gal', 'index', 'vir3.mark')
+
+def writemark_hres() :
+    """Get just the high res particles out of the gal group and write out their indices"""
+    charm.createGroup_AttributeRange('galhighres', 'gal', 'mass', -1, medmass*1.1)
+    charm.writeGroupArray('gal', 'index', 'vir3hr.mark')
 
 def readmark() :
     charm.readMark('/tmp/vir3.mark', 'mark', 'index')
