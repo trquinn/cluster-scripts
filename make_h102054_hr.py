@@ -118,7 +118,7 @@ def main():
     hrboxsize_hinv = hrboxsize*h
     nwaves_hr = 1536
     # for low res only: "unpad" the fft to this number
-    nwaves_keep = 768
+    # nwaves_keep = 768
 
     # mysystem('echo %d %g 1.0 %g 1.0 0.0 -50 %g %g %g | kgen_mt > hr.fft0'
     #             % (nwaves_hr, hrboxsize_hinv, h, omega,  tilt, gamma))
@@ -130,19 +130,22 @@ def main():
     # mysystem('speczero 0 %g < hr.rfft > hrz.fft'
     #              % ((hrboxsize_hinv/pboxsize_hinv)*nwaves_base/2))
     # mysystem('powk 1000 %g < hrz.fft > hrz.pow' % (kmax))
+    #
+    # Next command is for lr only
     # mysystem('unpad %d < hrz.fft > hrz_lr.fft'
     #              % (nwaves_keep,))
-    # mysystem('rhotophik < hrz_lr.fft > hr_lr.phfft')
-    # mysystem('gradrhok x < hr_lr.phfft | invfftr > hr_lr.fx')
-    # mysystem('gradrhok y < hr_lr.phfft | invfftr > hr_lr.fy')
-    # mysystem('gradrhok z < hr_lr.phfft | invfftr > hr_lr.fz')
+    #
+    mysystem('rhotophik < hrz.fft > hr.phfft')
+    mysystem('gradrhok x < hr.phfft | invfftr > hr.fx')
+    mysystem('gradrhok y < hr.phfft | invfftr > hr.fy')
+    mysystem('gradrhok z < hr.phfft | invfftr > hr.fz')
 
     # Center of group (in real Mpc)
     mx = -79.6875
     my = 191.40625
     mz = 284.375
 
-    mysystem('pmovefrgbg2t %s.g7.bin base.fx base.fy base.fz hr_lr.fx hr_lr.fy hr_lr.fz %g %g %g %g %g %g %g %g > %s.sbin'
+    mysystem('pmovefrgbg2t %s.g7.bin base.fx base.fy base.fz hr.fx hr.fy hr.fz %g %g %g %g %g %g %g %g > %s.sbin'
               % (name, zstart, bias, omega, om_lambda, 0.0, mx, my, mz, name))
     # Unit conversion from Mpc, 10^15 M_sun, Gyr to natural units
     tscale=1.0/sqrt(4.498*h*h*.0002776)
