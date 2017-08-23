@@ -139,9 +139,10 @@ def main():
     # mysystem('gradrhok z < hr_lr.phfft | invfftr > hr_lr.fz')
 
     # Center of group (in real Mpc)
-    mx = -56.640625
-    my = 53.515625
-    mz = 230.46875
+    mx = -252.734375
+    my = -78.90625
+    mz = 71.484375
+
 
     mysystem('pmovefrgbg2t %s.g6.bin base.fx base.fy base.fz hr_lr.fx hr_lr.fy hr_lr.fz %g %g %g %g %g %g %g %g > %s.sbin'
               % (name, zstart, bias, omega, om_lambda, 0.0, mx, my, mz, name))
