@@ -38,7 +38,7 @@ gastemp = 1e4
 #
 ############################################
 name='h34462hr'
-cpart = 'cpartt'
+cpart = 'cpartnc'
 refine = 'refinenc'
 markfile = 'h34462mr.vir3.mark'
 
@@ -58,7 +58,7 @@ def main():
     epsMpc = 0.00035155674140696647*64 # .351 kpc is romulus softening
     baseeps=epsMpc/pboxsize
     # make base particle grid
-    mysystem('%s %d %g %g %g %g %s.g1.bin' % (cpart, basegrid3, pmass, -pboxsize2, pboxsize2, baseeps, name))
+    # mysystem('%s %d %g %g %g %g %s.g1.bin' % (cpart, basegrid3, pmass, -pboxsize2, pboxsize2, baseeps, name))
     #
     # parameters for refinement
     # refine 5 times for this test run
@@ -73,35 +73,35 @@ def main():
     dr=basedr
     r_refine=r_refine/rfac
     print 'r_refine', r_refine
-    mysystem('%s %g %g 2 %s.g1.bin %s.g2.bin' % (refine, dr, r_refine, name, name))
+    # mysystem('%s %g %g 2 %s.g1.bin %s.g2.bin' % (refine, dr, r_refine, name, name))
 
     dr= dr*0.5
     r_refine=r_refine/rfac
     print 'r_refine', r_refine
-    mysystem('%s %g %g 2 %s.g2.bin %s.g3.bin' % (refine, dr, r_refine, name, name))
+    # mysystem('%s %g %g 2 %s.g2.bin %s.g3.bin' % (refine, dr, r_refine, name, name))
 
     r_refine=r_refine/rfac
     dr= dr*0.5
     print 'r_refine', r_refine
-    mysystem('%s %g %g 2 %s.g3.bin %s.g4.bin' % (refine, dr, r_refine, name, name))
+    # mysystem('%s %g %g 2 %s.g3.bin %s.g4.bin' % (refine, dr, r_refine, name, name))
 
     r_refine=r_refine/rfac
     dr= dr*0.5
     print 'r_refine', r_refine
-    mysystem('%s %g %g 2 %s.g4.bin %s.g5.bin' % (refine, dr, r_refine, name, name))
+    # mysystem('%s %g %g 2 %s.g4.bin %s.g5.bin' % (refine, dr, r_refine, name, name))
 
     r_refine=r_refine/rfac
     dr= dr*0.5
     print 'r_refine', r_refine
-    mysystem('%s %g %g 2 %s.g5.bin %s.g6.bin' % (refine, dr, r_refine, name, name))
+    # mysystem('%s %g %g 2 %s.g5.bin %s.g6.bin' % (refine, dr, r_refine, name, name))
 
     # Following is for high res.
     # r_refine=r_refine/rfac
     dr= dr*0.5
     print 'r_refine', r_refine
-    mysystem('%s %g %g 2 3 0 %g %g %s %s.g7.bin %s.ref.mrk 1 %s.g6.bin'
-               % ('gasdarkrefmarknc', dr, r_refine, gastemp, dmgasratio, markfile,
-                  name, markfile, name))
+    # mysystem('%s %g %g 2 3 0 %g %g %s %s.g7.bin %s.ref.mrk 1 %s.g6.bin'
+    #            % ('gasdarkrefmarknc', dr, r_refine, gastemp, dmgasratio, markfile,
+    #               name, markfile, name))
     # make waves
     if 0 :
         mysystem('echo %d %s 1.0 %s  1. 0.0  -7678301 %s %s %s | kgen_mt > out1' % (nwaves_base, pboxsize_hinv, h, omega,  tilt, gamma))
@@ -128,15 +128,15 @@ def main():
     kmax = nwaves_hr*6.28*sqrt(3.0)/hrboxsize
     # mysystem('powk 1000 %g < hrb.rfft > hrb.pow' % (kmax))
     # zero out waves up to the Nyquist of the LR run
-    mysystem('speczero 0 %g < hrb.rfft > hrbz.fft'
-                   % ((hrboxsize_hinv/pboxsize_hinv)*nwaves_base/2))
-    mysystem('powk 1000 %g < hrbz.fft > hrbz.pow' % (kmax))
+    # mysystem('speczero 0 %g < hrb.rfft > hrbz.fft'
+    #                % ((hrboxsize_hinv/pboxsize_hinv)*nwaves_base/2))
+    # mysystem('powk 1000 %g < hrbz.fft > hrbz.pow' % (kmax))
     # mysystem('unpad %d < hrbz.fft > hrbz_lr.fft'
     #               % (nwaves_keep,))
-    mysystem('rhotophik < hrbz.fft > hrbz.phfft')
-    mysystem('gradrhok x < hrbz.phfft | invfftr > hrb.fx')
-    mysystem('gradrhok y < hrbz.phfft | invfftr > hrb.fy')
-    mysystem('gradrhok z < hrbz.phfft | invfftr > hrb.fz')
+    # mysystem('rhotophik < hrbz.fft > hrbz.phfft')
+    # mysystem('gradrhok x < hrbz.phfft > gr_tmp.fft; invfftr < gr_tmp.fft > hrb.fx')
+    # mysystem('gradrhok y < hrbz.phfft > gr_tmp.fft; invfftr < gr_tmp.fft > hrb.fy')
+    # mysystem('gradrhok z < hrbz.phfft > gr_tmp.fft; invfftr < gr_tmp.fft > hrb.fz')
 
     # Center of group (in real Mpc)
     mx = -252.734375
