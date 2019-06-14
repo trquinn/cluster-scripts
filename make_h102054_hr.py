@@ -136,9 +136,9 @@ def main():
     #              % (nwaves_keep,))
     #
     mysystem('rhotophik < hrz.fft > hr.phfft')
-    mysystem('gradrhok x < hr.phfft | invfftr > hr.fx')
-    mysystem('gradrhok y < hr.phfft | invfftr > hr.fy')
-    mysystem('gradrhok z < hr.phfft | invfftr > hr.fz')
+    mysystem('gradrhok x < hr.phfft > gr_tmp.fft;  invfftr < gr_tmp.fft > hr.fx')
+    mysystem('export OMP_NUM_THREADS=4; gradrhok y < hr.phfft > gr_tmp.fft;  invfftr < gr_tmp.fft > hr.fy')
+    mysystem('export OMP_NUM_THREADS=4; gradrhok z < hr.phfft > gr_tmp.fft;  invfftr < gr_tmp.fft > hr.fz')
 
     # Center of group (in real Mpc)
     mx = -79.6875
