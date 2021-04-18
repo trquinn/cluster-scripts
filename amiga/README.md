@@ -28,3 +28,25 @@ Simpy.BlackHoles.mergers.reducedata(simname, RetData=False, outname='*out*', mer
 
 So what this does is reads through all the diagnostic files, which it finds based on outname (like *out* or *diag* or however you've named them). Then it stores the merger information in a file named BHmerge.txt. It then
 reads this file and creates a new file called simname.mergers. This looks for every merger happening up until t_end. Reading in the diagnostics will take longer because they can be large (another problem with the way things work)
+
+## testing tangos
+
+Set up environment variables and python (see tangos_env.sh)
+Start tangos with: "tangos serve"
+
+In python:
+>>> import tangos
+>>> tangos.all_simulations() # gets list of simulations
+>>> tangos.get_simulation("h82651gs").timesteps # list of timesteps
+>>> halo = tangos.get_halo("h82651gs/%4096/halo_1") # get halo 1 from last timestep
+
+"halo.keys()" reports a bunch of BH_central; how do I pick the right one?
+
+6/11/20: I can't get past "ValueError: Halo 220 does not exist" with timestep 131.
+Let me start again from the beginning.
+
+6/13/20: The ValueError above persists after rerunning everything in tangos_env.sh.
+
+6/14/20: The issue is that pynbody is trying to read the \*.amiga.grp files,
+and these files have different halo numberings than the \*AHF\* files.
+Start all over again after moving the \*.amiga.\* files to a subdirectory.
